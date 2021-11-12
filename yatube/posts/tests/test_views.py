@@ -280,8 +280,7 @@ class FollowTest(TestCase):
         )
         response = self.authorized_client.get(reverse('posts:follow_index'))
         self.assertTrue(new_post not in response.context['page_obj'])
-    
-    
+
     def test_follow_by_authorized_client(self):
         """Авторизованный пользователь может подписываться и
         отписываться от других пользователей."""

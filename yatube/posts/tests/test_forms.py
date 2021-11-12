@@ -83,7 +83,8 @@ class PostCreateEditFormTests(TestCase):
         last_post = Post.objects.all().order_by('id').last()
         self.assertEqual(last_post.text, form_data['text'])
         self.assertEqual(last_post.group.pk, form_data['group'])
-        path_to_img = f'{Post.image.field.upload_to}'+str(form_data['image'])
+        image = form_data['image']
+        path_to_img = f'{Post.image.field.upload_to}' + str(image)
         self.assertEqual(last_post.image, path_to_img)
 
     def test_edit_post(self):
@@ -192,8 +193,8 @@ class CommentFormTests(TestCase):
             )
         )
         comment = Comment.objects.filter(
-            author = CommentFormTests.user,
-            text = form_data['text']
+            author=CommentFormTests.user,
+            text=form_data['text']
         )
         self.assertTrue(comment[0] in response.context['comments'])
 
