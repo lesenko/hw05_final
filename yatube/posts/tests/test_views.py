@@ -281,8 +281,8 @@ class FollowTest(TestCase):
         self.assertTrue(new_post not in response.context['page_obj'])
 
     def test_follow_by_authorized_client(self):
-        """Авторизованный пользователь может подписываться и
-        отписываться от других пользователей."""
+        """Авторизованный пользователь может подписываться
+        на других пользователей."""
         response = self.authorized_client.get(
             reverse('posts:profile_follow', kwargs={'username': self.author})
         )
@@ -291,6 +291,13 @@ class FollowTest(TestCase):
         )
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.author})
+        )
+
+    def test_unfollow_by_authorized_client(self):
+        """Авторизованный пользователь может отписываться от
+        других пользователей."""
+        response = self.authorized_client.get(
+            reverse('posts:profile_follow', kwargs={'username': self.author})
         )
         response = self.authorized_client.get(
             reverse(

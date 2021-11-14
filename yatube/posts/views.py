@@ -12,12 +12,13 @@ User = get_user_model()
 
 def index(request):
     template = 'posts/index.html'
-    post_list = Post.objects.all()
+    post_list = Post.objects.select_related('group').all()
     paginator = Paginator(post_list, settings.PAGINATOR_NUM)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
+        'index': True,
     }
     return render(request, template, context)
 
@@ -45,10 +46,7 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     total_author_posts = author_list.count()
-    if author.following.exists():
-        following = True
-    else:
-        following = False
+    following = author.following.exists()
     context = {
         'page_obj': page_obj,
         'author': author,
@@ -128,22 +126,23 @@ def follow_index(request):
     page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
+        'follow': True,
     }
     return render(request, 'posts/follow.html', context)
 
 
 @login_required
 def profile_follow(request, username):
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     user = request.user
     if author != user:
         Follow.objects.get_or_create(user=user, author=author)
-        return redirect('posts:profile', username=username)
     return redirect('posts:profile', username=username)
 
 
 @login_required
 def profile_unfollow(request, username):
+    author = get_object_or_404(User, username=username)
     user = request.user
-    Follow.objects.get(user=user, author__username=username).delete()
+    Follow.objects.get(user=user, author=author).delete()
     return redirect('posts:profile', username=username)
