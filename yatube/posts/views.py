@@ -46,9 +46,11 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     total_author_posts = author_list.count()
-    following = Follow.objects.filter(
-        user=request.user, author=author
-    ).exists()
+    user = request.user
+    if user.is_authenticated and author.following.exists():
+        following = True
+    else:
+        following = False
     context = {
         'page_obj': page_obj,
         'author': author,

@@ -191,7 +191,7 @@ class PaginatorViewsTest(TestCase):
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
-                response = self.authorized_client.get(page_name)
+                response = self.client.get(page_name)
                 self.assertEqual(
                     len(response.context['page_obj']), settings.PAGINATOR_NUM
                 )
@@ -210,7 +210,7 @@ class PaginatorViewsTest(TestCase):
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
-                response = self.authorized_client.get(page_name + '?page=2')
+                response = self.client.get(page_name + '?page=2')
                 rest_posts = len(self.posts_list) - settings.PAGINATOR_NUM
                 if rest_posts <= settings.PAGINATOR_NUM:
                     self.assertEqual(
