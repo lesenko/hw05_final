@@ -166,6 +166,8 @@ class PaginatorViewsTest(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
+        cls.authorized_client = Client()
+        cls.authorized_client.force_login(cls.user)
         cls.posts_list = []
         for i in range(13):
             cls.posts_list.append(Post.objects.create(
@@ -180,13 +182,13 @@ class PaginatorViewsTest(TestCase):
             reverse('posts:index'),
             reverse(
                 'posts:group_list',
-                kwargs={'slug': PaginatorViewsTest.group.slug}
+                kwargs={'slug': self.group.slug}
             ),
             reverse('posts:profile', kwargs={'username': self.user}),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
-                response = self.client.get(page_name)
+                response = self.authorized_client.get(page_name)
                 self.assertEqual(
                     len(response.context['page_obj']), settings.PAGINATOR_NUM
                 )
@@ -197,13 +199,13 @@ class PaginatorViewsTest(TestCase):
             reverse('posts:index'),
             reverse(
                 'posts:group_list',
-                kwargs={'slug': PaginatorViewsTest.group.slug}
+                kwargs={'slug': self.group.slug}
             ),
             reverse('posts:profile', kwargs={'username': self.user}),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
-                response = self.client.get(page_name + '?page=2')
+                response = self.authorized_client.get(page_name + '?page=2')
                 rest_posts = len(self.posts_list) - settings.PAGINATOR_NUM
                 if rest_posts <= settings.PAGINATOR_NUM:
                     self.assertEqual(

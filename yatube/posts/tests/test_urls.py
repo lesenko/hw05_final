@@ -37,7 +37,7 @@ class PostURLTests(TestCase):
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
-                response = self.client.get(page_name)
+                response = self.authorized_client.get(page_name)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_post_create_exists_at_desired_location(self):

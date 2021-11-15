@@ -46,7 +46,9 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     total_author_posts = author_list.count()
-    following = author.following.exists()
+    following = Follow.objects.filter(
+        user=request.user, author=author
+    ).exists()
     context = {
         'page_obj': page_obj,
         'author': author,
@@ -144,5 +146,5 @@ def profile_follow(request, username):
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
     user = request.user
-    Follow.objects.get(user=user, author=author).delete()
+    get_object_or_404(Follow, user=user, author=author).delete()
     return redirect('posts:profile', username=username)

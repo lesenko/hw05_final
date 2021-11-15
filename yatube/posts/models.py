@@ -30,13 +30,13 @@ class Post(models.Model):
         blank=True
     )
 
-    def __str__(self):
-        return self.text[:15]
-
     class Meta:
         ordering = ['-pub_date']
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
+
+    def __str__(self):
+        return self.text[:15]
 
 
 class Group(models.Model):
@@ -67,12 +67,6 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'], name="unique_follow_users"
-            )
-        ]
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -83,3 +77,10 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following'
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'], name="unique_follow_users"
+            )
+        ]
