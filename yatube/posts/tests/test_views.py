@@ -161,13 +161,13 @@ class PaginatorViewsTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.authorized_client = Client()
+        cls.authorized_client.force_login(cls.user)
         cls.group = Group.objects.create(
             title='Заголовок',
             slug='test-slug',
             description='Тестовое описание',
         )
-        cls.authorized_client = Client()
-        cls.authorized_client.force_login(cls.user)
         cls.posts_list = []
         for i in range(13):
             cls.posts_list.append(Post.objects.create(
@@ -184,7 +184,7 @@ class PaginatorViewsTest(TestCase):
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
             ),
-            reverse('posts:profile', kwargs={'username': self.user}),
+            reverse('posts:profile', kwargs={'username': self.user.username}),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
@@ -201,7 +201,7 @@ class PaginatorViewsTest(TestCase):
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
             ),
-            reverse('posts:profile', kwargs={'username': self.user}),
+            reverse('posts:profile', kwargs={'username': self.user.username}),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
