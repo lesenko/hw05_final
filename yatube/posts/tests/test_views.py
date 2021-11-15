@@ -185,7 +185,9 @@ class PaginatorViewsTest(TestCase):
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
             ),
-            reverse('posts:profile', kwargs={'username': self.author}),
+            reverse(
+                'posts:profile', kwargs={'username': self.author.username}
+            ),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
@@ -202,7 +204,9 @@ class PaginatorViewsTest(TestCase):
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
             ),
-            reverse('posts:profile', kwargs={'username': self.author}),
+            reverse(
+                'posts:profile', kwargs={'username': self.author.username}
+            ),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
