@@ -160,9 +160,7 @@ class PaginatorViewsTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
-        cls.authorized_client = Client()
-        cls.authorized_client.force_login(cls.user)
+        cls.author = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
             title='Заголовок',
             slug='test-slug',
@@ -171,10 +169,13 @@ class PaginatorViewsTest(TestCase):
         cls.posts_list = []
         for i in range(13):
             cls.posts_list.append(Post.objects.create(
-                author=cls.user,
+                author=cls.author,
                 text='TestText',
                 group=cls.group,
             ))
+        cls.user = User.objects.create_user(username='Test User')
+        cls.authorized_client = Client()
+        cls.authorized_client.force_login(cls.user)
 
     def test_first_page_index_contains_ten_records(self):
         """Kоличество постов на первой странице равно 10."""
@@ -184,7 +185,7 @@ class PaginatorViewsTest(TestCase):
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
             ),
-            reverse('posts:profile', kwargs={'username': self.user.username}),
+            reverse('posts:profile', kwargs={'username': self.author}),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
@@ -201,7 +202,7 @@ class PaginatorViewsTest(TestCase):
                 'posts:group_list',
                 kwargs={'slug': self.group.slug}
             ),
-            reverse('posts:profile', kwargs={'username': self.user.username}),
+            reverse('posts:profile', kwargs={'username': self.author}),
         }
         for page_name in page_names:
             with self.subTest(page_name=page_name):
