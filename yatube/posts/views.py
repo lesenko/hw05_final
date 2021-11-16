@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
@@ -47,7 +47,9 @@ def profile(request, username):
     page_obj = paginator.get_page(page_number)
     total_author_posts = author_list.count()
     user = request.user
-    following = user.is_authenticated and author.following.exists()
+    following = user.is_authenticated and author.following.filter(
+        user=user
+        ).exists()
     context = {
         'page_obj': page_obj,
         'author': author,
